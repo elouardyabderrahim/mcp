@@ -1,5 +1,5 @@
+import mcp
 from  mcp.server.fastmcp import FastMCP
-
 import requests
 
 mcp = FastMCP("Time zone  and Currency MCP")
@@ -8,9 +8,9 @@ mcp = FastMCP("Time zone  and Currency MCP")
 def convert_time_zone(time_zone_source: str ,time_zone_target : str,dateTime: str   ) -> str :
     
     payload = {
-    "dateTime": "2026-05-08T15:53:46.118589",
-    "fromTimezone": "America/New_York",
-    "toTimezone": "Europe/London"
+    "dateTime": dateTime,
+    "fromTimezone": time_zone_source,
+    "toTimezone": time_zone_target
         }
     
     url="https://opentimezone.com/convert"
@@ -20,7 +20,6 @@ def convert_time_zone(time_zone_source: str ,time_zone_target : str,dateTime: st
     converted_time = data.get("dateTime","N/A")
     return  f" this time {dateTime} in {time_zone_source} to {time_zone_target} is {converted_time}"
 
-# Adding typing to the function arguments and return object
 @mcp.tool()
 def convert_currency(amount: float, from_currency: str, to_currency: str) -> str:
     # Complete the docstring with the function arguments
@@ -49,3 +48,7 @@ def convert_currency(amount: float, from_currency: str, to_currency: str) -> str
     return f"{amount} {from_currency} = {converted_amount:.2f} {to_currency} (Rate: {rate})"
 
 print(convert_currency(amount=100, from_currency="EUR", to_currency="USD"))
+
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio") # standart i/o , http, sse 
