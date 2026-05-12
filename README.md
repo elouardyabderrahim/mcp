@@ -58,3 +58,45 @@ Used for remote or networked servers.
 
 * **Scalability:** Allows the AI to connect to tools hosted in the cloud.
 ![Streamable HTTP](attachments/Pasted%20image%2020260508214434.png)
+
+
+
+```Python
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+async def call_mcp_tool(tool_name: str, arguments: dict) -> str:
+    params = StdioServerParameters(
+        command=sys.executable,
+        args=["currency_server.py"],
+    )
+
+    async with stdio_client(params) as (reader, writer):
+        async with ClientSession(reader, writer) as session:
+            await session.initialize()
+
+            # Call the currency conversion tool
+            result = await session.call_tool(tool_name, arguments)
+            print("result  : " ,result)
+            # Extract and print the text content of the server response
+            text_content = result.content[0].text
+            print("text_content  : " , text_content)
+
+            # print(f"Conversion Result: {text_content}")
+            return text_content
+
+# Run the "convert_currency" tool
+asyncio.run(
+    call_mcp_tool("convert_currency",
+                  {"amount": 250.0, "from_currency": "USD", "to_currency": "EUR"})
+)
+```
+
+## Resources in MCP Servers
+
+## MCP and LLMs: Tools
+![mcp tools to llm tools](attachments/image.png)
+![mcp tools to llm tools](attachments/imagecopy.png)
+
+
+
