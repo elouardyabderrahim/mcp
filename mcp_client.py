@@ -24,7 +24,7 @@ async def read_resource(resource_uri: str):
     """Phase 2: Context - Read a specific resource."""
     async with stdio_client(PARAMS) as (read, write):
         async with ClientSession(read, write) as session:
-            await session.initialize()[cite: 1, 3]
+            await session.initialize()
             print(f"\n--- Reading Resource: {resource_uri} ---")
             resource_content = await session.read_resource(resource_uri)
             for content in resource_content.contents:
@@ -35,7 +35,7 @@ async def call_mcp_tool(tool_name: str, arguments: dict):
     """Phase 3: Execution - Call a tool with arguments."""
     async with stdio_client(PARAMS) as (read, write):
         async with ClientSession(read, write) as session:
-            await session.initialize()[cite: 1, 3]
+            await session.initialize()
             print(f"\n--- Calling Tool: {tool_name} ---")
             result = await session.call_tool(tool_name, arguments)
             text_content = result.content[0].text
