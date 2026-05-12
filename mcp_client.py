@@ -56,14 +56,31 @@ async def list_prompts():
 
             return prompts.prompts
         
-        
-asyncio.run(list_prompts())
+
+async def read_prompt(user_input: str = "How much is 50 GBP in euros?", prompt_name: str = "convert_currency_prompt") -> str:
+    """Retrieve a prompt from the MCP server with user input."""
+    params = StdioServerParameters(command=sys.executable, args=["currency_server.py"])
+
+    async with stdio_client(params) as (reader, writer):
+        async with ClientSession(reader, writer) as session:
+            await session.initialize()
+
+            # Retrieve the prompt with the user's input
+            prompt = await session.get_prompt(prompt_name, arguments={"currency_request": user_input})
+            print(prompt.messages[0].content.text)
+            # Print the full prompt text (template + user request)
+            text = prompt.messages[0].content.text
+            print(text)
+            return text
+
+
 async def main():
     # Execute the full workflow
     await get_tools_from_mcp()
     await read_resource("file://currencies.txt")
     await call_mcp_tool("convert_currency", {"amount": 250.0, "from_currency": "USD", "to_currency": "EUR"})
     await list_prompts
+    await read_prompt(user_input="How much is 50 GBP in euros?")
 
 if __name__ == "__main__":
     asyncio.run(main())
