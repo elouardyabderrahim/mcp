@@ -41,7 +41,25 @@ def get_currencies() -> str:
             return f.read()
     except FileNotFoundError:
         return "currencies.txt file not found"
+    
+# Define a prompt for currency conversion
+@mcp.prompt(title="Currency Conversion")
+def currency_conversion_prompt(currency_request: str) -> str:
+    return f"""You are a currency conversion assistant.
 
+Your task is to:
+1. Extract the amount and source currency from the user's natural language input.
+2. Identify the target currency.
+3. Use the conversion tool to convert the amount.
+
+Rules:
+- If the amount or currencies are ambiguous or missing, ask the user for clarification.
+- Use only supported currency codes (e.g., USD, EUR, GBP).
+
+User's currency conversion request: {currency_request}"""
+
+# Test the prompt function
+print(currency_conversion_prompt("100 USD to EUR"))
 if __name__ == "__main__":
     # Start the server using stdio transport
     mcp.run(transport="stdio")  # standart i/o , http, sse 
